@@ -1,18 +1,24 @@
 
-# Installing Arch Linux on Chromebooks That Don't Support SeaBios
+# Installing Arch Linux on Toshiba Chromebook 2
 
 **THIS GUIDE IS NOT YET COMPLETE. IN ITS CURRENT STATE IT SHOULD GET YOU TO A BOOTING ARCH LINUX INSTALLATION WITH A FEW ISSUES. SOLUTIONS TO THESE ISSUES WILL BE ADDED SOON**
 
-This guide details the process I used to install Arch Linux on my ASUS C300. Please note that some issues may arise becuase (at the moment) we can only use the kernel provided by Chrome OS, which is version 3.10. 
+This guide details the process I used to install Arch Linux on my Toshiba Chromebook 2.  The guide has been modified from github.com/drsn0w for his baytrail findings.
+
 Currently this guide is only for Linux.
+
+### Note
+I was on chromeos 41.0.2272.89 (64 bit) firmware Google_Swanky.5216.238.5
+While performing this, so powerwash + reset may be required.
 
 ### Known Issues
 - Sound does not work
-- Occasional freezing
 - Suspend does not work
+- Kernel Panic on Shutdown / reboot
+- Creating Volitile files 2 min delay on boot
 
 ## Requirements
-- ASUS C300 Chromebook (others may work, untested)
+- Toshiba Chromebook 2 (others may work, untested)
 - Another computer running Linux
 - squashfs-utils
 - Chrome OS Recovery Media (make this before you start!!!)
@@ -27,24 +33,26 @@ Currently this guide is only for Linux.
 2. Download the latest Arch Linux ISO image from the Arch Linux website.
 3. Using an archive utility, extract the following from the Arch Linux ISO: `arch/x86_64/airootfs.sfs`.
 4. `unsquashfs airootfs.sfs`
-5. `cp -R squashfsroot/* /USB/mount/point`
-6. Unmount USB drive
+5. mount the .img file extracted by unsquashfs with mount -o loop *.img yourdir/
+6. Copy the files that you mounted to your usb with `cp -R yourdir/* /USB/mount/point`
+7. Unmount USB drive
 
 ## Prepare Chromebook for booting from Arch Installer
 *Commands in this section are to be typed on your Chromebook in Chrome OS*
 
 1. Make sure your Chromebook is in Developer Mode. If you're not sure, it probably isn't. Google how to do this, as it is outside the scope of these instructions. 
-2. Download the tarball of this repo (link here)
+2. Download this repo zip or tar.
 3. Open Crosh and type `shell`
 4. `sudo crossystem dev_boot_signed_only=0`
 4. `cd ~/Downloads`
-5. `tar -xvsf repo.tarball.tar.gz`
+5. Unzip or `tar -xvsf repo.tarball.tar.gz` the downloaded file
 6. `cd repo-directory`
-7. `cp /usr/share/vboot/devkeys/kernel_data_key.vprivk ./`
-7. `bash extract_kernel`
-8. `echo "root=/dev/sda1 ro rootwait" > config.txt`
-9. `bash repack_kernel`
-10. **MAKE SURE THERE ARE NO ERRORS. FLASHING A BAD KERNEL WILL REQUIRE YOU TO RECOVER YOUR CHROMEBOOK AND START FROM THE BEGINNING OF THIS SECTION**
+7. `cp /usr/share/vboot/devkeys/kernel_data_key.vbprivk ./`
+8. `cp /usr/share/vboot/devkeys/kernel.keyblock ./`
+9. `bash extract_kernel`
+10. `echo "root=/dev/sda1 ro rootwait" > config.txt`
+11. `bash repack_kernel`
+12. **MAKE SURE THERE ARE NO ERRORS. FLASHING A BAD KERNEL WILL REQUIRE YOU TO RECOVER YOUR CHROMEBOOK AND START FROM THE BEGINNING OF THIS SECTION**
 11. `bash flash_kernel`
 12. Please note that at this point, your Chromebook will not boot into Chrome OS without being Recovered.
 13. Plug in the Arch Linux installer USB you created earlier
