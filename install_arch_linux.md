@@ -50,16 +50,19 @@ While performing this, so powerwash + reset may be required.
 7. `cp /usr/share/vboot/devkeys/kernel_data_key.vbprivk ./`
 8. `cp /usr/share/vboot/devkeys/kernel.keyblock ./`
 9. `bash extract_kernel`
-10. `echo "root=/dev/sda1 ro rootwait" > config.txt`
-11. `bash repack_kernel`
-12. **MAKE SURE THERE ARE NO ERRORS. FLASHING A BAD KERNEL WILL REQUIRE YOU TO RECOVER YOUR CHROMEBOOK AND START FROM THE BEGINNING OF THIS SECTION**
-11. `bash flash_kernel`
-12. Please note that at this point, your Chromebook will not boot into Chrome OS without being Recovered.
-13. Plug in the Arch Linux installer USB you created earlier
-14. Mount the USB drive
-13. `cp -R /usr/lib/modules/3.10.18/* /usb/mount/point/usr/lib/3.10.18/`
-14. `cp /usr/share/vboot/devkeys/kernel_data_key.vprivk /usb/mount/point`
-13. Shutdown your Chromebook.
+10. ** We create two kernels here, one is flashed now, and one after arch is installed plug in your install usb now **
+11. `echo "root=/dev/mmcblk0p1 ro rootwait" > config.txt`
+12. `bash repack_kernel`
+13. `cp repacked2 /USB/mount/point/`
+14. `echo "root=/dev/sda1 ro rootwait" > config.txt`
+15. `bash repack_kernel`
+16. **MAKE SURE THERE ARE NO ERRORS. FLASHING A BAD KERNEL WILL REQUIRE YOU TO RECOVER YOUR CHROMEBOOK AND START FROM THE BEGINNING OF THIS SECTION**
+17. `bash flash_kernel`
+18. Please note that at this point, your Chromebook will not boot into Chrome OS without being Recovered.
+29. `cp -R /lib/modules/3.10.18 /usb/mount/point/usr/lib/modules/`
+20. `cp /usr/share/vboot/devkeys/kernel_data_key.vprivk /usb/mount/point`
+21. `cp /usr/share/vboot/devkeys/kernel.keyblock /usb/mount/point`
+22. Shutdown your Chromebook.
 
 ## Boot the installation medium on your Chromebook
 
