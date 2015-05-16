@@ -83,7 +83,7 @@ While performing this, so powerwash + reset may be required.
 6. `exit` from the arch-chroot.
 7. **Now flash the kernel we copied to the root usb earlier**
 9. cd /
-10. dd if=repacked2 of=/dev/mmcblk0p2
+10. `dd if=repacked2 of=/dev/mmcblk0p2`
 11. `cp -R /usr/lib/modules/3.10.18 /mnt/usr/lib/modules/`
 12. `umount /mnt`
 13. `shutdown -h now`
