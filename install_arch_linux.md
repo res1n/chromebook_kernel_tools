@@ -50,7 +50,7 @@ While performing this, so powerwash + reset may be required.
 7. `cp /usr/share/vboot/devkeys/kernel_data_key.vbprivk ./`
 8. `cp /usr/share/vboot/devkeys/kernel.keyblock ./`
 9. `bash extract_kernel`
-10. ** We create two kernels here, one is flashed now, and one after arch is installed plug in your install usb now **
+10. **We create two kernels here, one is flashed now, and one after arch is installed plug in your install usb now**
 11. `echo "root=/dev/mmcblk0p1 ro rootwait" > config.txt`
 12. `bash repack_kernel`
 13. `cp repacked2 /USB/mount/point/`
@@ -69,31 +69,22 @@ While performing this, so powerwash + reset may be required.
 1. Press the Power button on your Chromebook.
 2. Press Control+D to bypass the Developer Mode warning screen.
 3. If all goes well, the Arch installation shell should boot. 
-4. If it hangs on "Creating Volatile Files and Directories", wait. After two minutes, booting will continue. This is normal and we will fix the issue later in this guide. 
+4. If it hangs on "Creating Volatile Files and Directories", wait. After two minutes it will boot.
 
 *You should be at a root shell with the prompt `root@archiso# `. This is the Arch Linux installation prompt.*
 
 ## Installing Arch Linux
 
-1. `mkfs.ext4 /dev/mmcblk0p1`
-2. `mount /dev/mmcblk0p1 /mnt`
-3. Use `wifi-menu` to establish an internet connection. Note that it may take up to three minutes for Arch Linux to recognise the WiFi card, so be patient if wifi-menu doesn't work.
-4. Follow the [Arch Linux Beginner's Guide starting at Select a mirror](https://wiki.archlinux.org/index.php/Beginners%27_guide#Select_a_mirror), up until "Install and configure a bootloader". **Do not Install and configure a bootloader.**
-5. `exit` from the arch-chroot.
-6. `pacman -S git`
-7. `git clone https://github.com/drsn0w/chromebook_kernel_tools.git`
-8. `cd chromebook_kernel_tools`
-9. `cp /kernel_data_key.vprivk ./`
-9. `./extract_kernel`
-10. `echo "root=/dev/mmcblk0p1 ro rootwait" > config.txt`
-11. `./repack_kernel`
-12. `./flash_kernel`
-13. `cp -R /usr/lib/modules/3.10.18/* /mnt/usr/lib/modules/3.10.18/`
-13. `umount /mnt`
-14. `shutdown -h now`
-15. Once the Chromebook powers off, remove the flashdrive.
-
-
-**AFTER YOU FINISH, PLEASE FILL OUT THE FORM LOCATED [HERE](https://docs.google.com/forms/d/1yEIaIknRrFGd1RV3wPgTnfNkZ0Ag4AvDK6Z0tR7E0Mc/viewform?usp=send_form) TO MAKE IT EASIER FOR ME TO IRON OUT ANY ISSUES. THANK YOU**
-
-
+1. `mount -o remount,rw /`
+2. `mkfs.ext4 /dev/mmcblk0p1`
+3. `mount /dev/mmcblk0p1 /mnt`
+4. Use `wifi-menu` to establish an internet connection. Note that it may take up to three minutes for Arch Linux to recognise the WiFi card, so be patient if wifi-menu doesn't work.
+5. Follow the [Arch Linux Beginner's Guide starting at Select a mirror](https://wiki.archlinux.org/index.php/Beginners%27_guide#Select_a_mirror), up until "Install and configure a bootloader". **Do not Install and configure a bootloader.**
+6. `exit` from the arch-chroot.
+7. **Now flash the kernel we copied to the root usb earlier**
+9. cd /
+10. dd if=repacked2 of=/dev/mmcblk0p2
+11. `cp -R /usr/lib/modules/3.10.18 /mnt/usr/lib/modules/`
+12. `umount /mnt`
+13. `shutdown -h now`
+14. After shutting down you will see a kernel panic, press and hold power to turn off. **required to do this on every shutdown, hopefully someone can fix!**
