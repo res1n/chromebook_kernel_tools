@@ -7,15 +7,9 @@ This guide details the process I used to install Arch Linux on my Toshiba Chrome
 
 Currently this guide is only for Linux.
 
-### Note
-I was on chromeos 41.0.2272.89 (64 bit) firmware Google_Swanky.5216.238.5
-While performing this, so powerwash + reset may be required.
-
 ### Known Issues
-- Sound does not work
 - Suspend does not work
-- Kernel Panic on Shutdown / reboot
-- Creating Volitile files 2 min delay on boot
+- Video Acceleration / Choppy Playback
 
 ## Requirements
 - Toshiba Chromebook 2 (others may work, untested)
@@ -54,7 +48,7 @@ While performing this, so powerwash + reset may be required.
 11. `echo "root=/dev/mmcblk0p1 ro rootwait" > config.txt`
 12. `bash repack_kernel`
 13. `cp repacked2 /USB/mount/point/`
-14. `echo "root=/dev/sda1 ro rootwait" > config.txt`
+14. `echo "root=/dev/sda1 rw rootwait" > config.txt`
 15. `bash repack_kernel`
 16. **MAKE SURE THERE ARE NO ERRORS. FLASHING A BAD KERNEL WILL REQUIRE YOU TO RECOVER YOUR CHROMEBOOK AND START FROM THE BEGINNING OF THIS SECTION**
 17. `bash flash_kernel`
@@ -75,16 +69,31 @@ While performing this, so powerwash + reset may be required.
 
 ## Installing Arch Linux
 
-1. `mount -o remount,rw /`
-2. `mkfs.ext4 /dev/mmcblk0p1`
-3. `mount /dev/mmcblk0p1 /mnt`
-4. Use `wifi-menu` to establish an internet connection. Note that it may take up to three minutes for Arch Linux to recognise the WiFi card, so be patient if wifi-menu doesn't work.
-5. Follow the [Arch Linux Beginner's Guide starting at Select a mirror](https://wiki.archlinux.org/index.php/Beginners%27_guide#Select_a_mirror), up until "Install and configure a bootloader". **Do not Install and configure a bootloader.**
-6. `exit` from the arch-chroot.
-7. **Now flash the kernel we copied to the root usb earlier**
-9. cd /
-10. `dd if=repacked2 of=/dev/mmcblk0p2`
-11. `cp -R /usr/lib/modules/3.10.18 /mnt/usr/lib/modules/`
-12. `umount /mnt`
-13. `shutdown -h now`
-14. After shutting down you will see a kernel panic, press and hold power to turn off. **required to do this on every shutdown, hopefully someone can fix!**
+1. `mkfs.ext4 /dev/mmcblk0p1`
+2. `mount /dev/mmcblk0p1 /mnt`
+3. Use `wifi-menu` to establish an internet connection. Note that it may take up to three minutes for Arch Linux to recognise the WiFi card, so be patient if wifi-menu doesn't work.
+4. Follow the [Arch Linux Beginner's Guide starting at Select a mirror](https://wiki.archlinux.org/index.php/Beginners%27_guide#Select_a_mirror), up until "Install and configure a bootloader". **Do not Install and configure a bootloader.**
+5. `exit` from the arch-chroot.
+6. **Now flash the kernel we copied to the root usb earlier**
+7. cd /
+8. `dd if=repacked2 of=/dev/mmcblk0p2`
+9. `cp -R /usr/lib/modules/3.10.18 /mnt/usr/lib/modules/`
+10. `umount /mnt`
+11. `shutdown -h now`
+12. After shutting down you will see a kernel panic, press and hold power to turn off. **required to do this on every shutdown, hopefully someone can fix!**
+
+## Fixes
+
+**Sound** 
+
+Audio can be fixed by downloading https://chromium.googlesource.com/chromiumos/third_party/linux-firmware/+archive/refs/heads/stabilize-5339.B/intel.tar.gz and extracting to /lib/firmware/intel
+- Install alsamixer + pulseaudio and set the following in /etc/pulseaudio/default.pa
+`load-module module-alsasink device=hw:1,0 load-module module-alsa-source device=hw:1,0`
+
+**Volatile files**
+
+I was able to get this fixed by renaming /etc/tmpfiles.d and masking tmpfs ( google is your friend ).  Appears to be releated to the kernel version.
+
+**Shutdown Panic**
+
+Install acpi and all should be well!  I copied laptop-mode-tools as well from the chromeos and installed the package from aur.
