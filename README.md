@@ -1,11 +1,11 @@
-# chromebook_kernel_tools
+# Toshiba Chromebook2 Kernel Tools
+This is a fork of https://github.com/drsn0w/chromebook_kernel_tools.
+
+Install guide is changed for [Toshiba Chromebook 2.](https://github.com/res1n/toshiba_chromebook2_kernel_tools/blob/master/install_arch_linux.md)  
+
 Kernel repacking and flashing tools for Chromebook.
 Please note that these tools do not stop you from flashing a bad file to your Chromebook, so be careful and have some sort of CrOS recovery media handy.
-
-**Changelog**
-
-05/02/2015: Initial commit & add basic Linux installation guide.
-
+***
 
 ## Requirements
 
